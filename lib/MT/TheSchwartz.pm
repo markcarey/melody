@@ -257,6 +257,7 @@ sub work_periodically {
     $delay ||= 5;
     my $last_task_run = 0;
     my $did_work      = 0;
+    my $start = time;
 
     # holds state of objects at start
     my %obj_start;
@@ -295,6 +296,10 @@ sub work_periodically {
             }
         }
 
+        if (MT->config('RPTDaemonTTL')) {
+            exit if ((time - $start) > (MT->config('RPTDaemonTTL')));  # in seconds
+        }
+        
         sleep $delay;
     } ## end while (1)
 } ## end sub work_periodically
